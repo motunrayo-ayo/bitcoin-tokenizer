@@ -15,3 +15,23 @@
 (define-constant ERR-INVALID-RECIPIENT (err u106))
 (define-constant MIN-DEPOSIT-AMOUNT u100) ;; Minimum deposit in sats
 (define-constant MAX-DEPOSIT-AMOUNT u1000000000) ;; Maximum deposit in sats
+
+;; Data Variables
+(define-data-var contract-owner principal tx-sender)
+(define-data-var total-supply uint u0)
+(define-data-var initialized bool false)
+(define-data-var protocol-fee-rate uint u5) ;; 0.5% fee rate (5/1000)
+(define-data-var treasury principal 'SP000000000000000000002Q6VF78)
+
+;; FT Token Definition
+(define-fungible-token wrapped-btc)
+
+;; Data Maps
+(define-map user-deposits 
+    principal 
+    {
+        btc-amount: uint,
+        last-deposit: uint,
+        total-deposits: uint
+    }
+)
