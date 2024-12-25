@@ -146,3 +146,25 @@
         (ok true)
     )
 )
+
+(define-public (approve-operator (operator principal))
+    (begin
+        (try! (check-initialized))
+        (map-set approved-operators
+            { owner: tx-sender, operator: operator }
+            true
+        )
+        (ok true)
+    )
+)
+
+(define-public (revoke-operator (operator principal))
+    (begin
+        (try! (check-initialized))
+        (map-set approved-operators
+            { owner: tx-sender, operator: operator }
+            false
+        )
+        (ok true)
+    )
+)
