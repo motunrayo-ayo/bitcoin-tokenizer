@@ -194,3 +194,20 @@
         (ok true)
     )
 )
+
+;; Read-only Functions
+(define-read-only (get-name)
+    (ok "Wrapped Bitcoin Token")
+)
+
+(define-read-only (get-symbol)
+    (ok "wBTC")
+)
+
+(define-read-only (get-decimals)
+    (ok u8)
+)
+
+(define-read-only (get-total-supply)
+    (ok (var-get total-supply))
+)
