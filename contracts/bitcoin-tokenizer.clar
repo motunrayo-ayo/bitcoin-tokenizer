@@ -61,3 +61,20 @@
         (<= amount MAX-DEPOSIT-AMOUNT)
     )
 )
+
+(define-private (update-user-deposits (user principal) (amount uint))
+    (let (
+        (existing-data (default-to 
+            { btc-amount: u0, last-deposit: u0, total-deposits: u0 }
+            (map-get? user-deposits user)
+        ))
+    )
+    (map-set user-deposits
+        user
+        {
+            btc-amount: (+ (get btc-amount existing-data) amount),
+            last-deposit: block-height,
+            total-deposits: (+ (get total-deposits existing-data) amount)
+        }
+    ))
+)
