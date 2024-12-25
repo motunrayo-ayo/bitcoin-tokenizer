@@ -230,3 +230,12 @@
 (define-read-only (get-fee-rate)
     (ok (var-get protocol-fee-rate))
 )
+
+;; Error handling and logging
+(define-public (emergency-shutdown)
+    (begin
+        (asserts! (is-contract-owner) ERR-NOT-AUTHORIZED)
+        (var-set initialized false)
+        (ok true)
+    )
+)
