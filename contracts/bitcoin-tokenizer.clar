@@ -78,3 +78,40 @@
         }
     ))
 )
+
+;; Public Functions
+(define-public (initialize (treasury-address principal))
+    (begin
+        (asserts! (not (var-get initialized)) ERR-ALREADY-INITIALIZED)
+        (var-set treasury treasury-address)
+        (var-set initialized true)
+        (ok true)
+    )
+)
+
+(define-public (deposit-btc (amount uint))
+    (begin
+        (try! (check-initialized))
+        (asserts! (validate-amount amount) ERR-INVALID-AMOUNT)
+        
+        (let (
+            (fee (calculate-fee amount))
+            (token-amount (- amount fee))
+        )
+            ;; Update deposits
+            (update-user-deposits tx-sender amount)
+            
+            ;; Mint tokens
+            (try! (ft-mint? wrapped-btc token-amount tx-sender))
+            
+            ;; Update total supply
+            (var-set total-supply (+ (var-get total-supply) token-amount))
+            
+            ;; Transfer fee to treasury
+            (and (> fee u0)
+                (try! (stx-transfer? fee tx-sender (var-get treasury))))
+            
+            (ok token-amount)
+        )
+    )
+)
