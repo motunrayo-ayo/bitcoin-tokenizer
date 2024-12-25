@@ -168,3 +168,29 @@
         (ok true)
     )
 )
+
+;; Admin Functions
+(define-public (update-fee-rate (new-rate uint))
+    (begin
+        (asserts! (is-contract-owner) ERR-NOT-AUTHORIZED)
+        (asserts! (<= new-rate u100) ERR-INVALID-AMOUNT)
+        (var-set protocol-fee-rate new-rate)
+        (ok true)
+    )
+)
+
+(define-public (update-treasury (new-treasury principal))
+    (begin
+        (asserts! (is-contract-owner) ERR-NOT-AUTHORIZED)
+        (var-set treasury new-treasury)
+        (ok true)
+    )
+)
+
+(define-public (transfer-ownership (new-owner principal))
+    (begin
+        (asserts! (is-contract-owner) ERR-NOT-AUTHORIZED)
+        (var-set contract-owner new-owner)
+        (ok true)
+    )
+)
