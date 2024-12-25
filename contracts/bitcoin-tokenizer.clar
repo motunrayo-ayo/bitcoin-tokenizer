@@ -35,3 +35,29 @@
         total-deposits: uint
     }
 )
+
+(define-map approved-operators 
+    { owner: principal, operator: principal } 
+    bool
+)
+
+;; Private Functions
+(define-private (is-contract-owner)
+    (is-eq tx-sender (var-get contract-owner))
+)
+
+(define-private (calculate-fee (amount uint))
+    (/ (* amount (var-get protocol-fee-rate)) u1000)
+)
+
+(define-private (check-initialized)
+    (asserts! (var-get initialized) ERR-NOT-INITIALIZED)
+    (ok true)
+)
+
+(define-private (validate-amount (amount uint))
+    (and 
+        (>= amount MIN-DEPOSIT-AMOUNT)
+        (<= amount MAX-DEPOSIT-AMOUNT)
+    )
+)
