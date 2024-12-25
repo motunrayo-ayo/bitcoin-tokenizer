@@ -115,3 +115,34 @@
         )
     )
 )
+
+(define-public (withdraw-btc (amount uint))
+    (begin
+        (try! (check-initialized))
+        (asserts! (>= amount MIN-DEPOSIT-AMOUNT) ERR-INVALID-AMOUNT)
+        
+        ;; Check balance
+        (asserts! (<= amount (ft-get-balance wrapped-btc tx-sender)) ERR-INSUFFICIENT-BALANCE)
+        
+        ;; Burn tokens
+        (try! (ft-burn? wrapped-btc amount tx-sender))
+        
+        ;; Update total supply
+        (var-set total-supply (- (var-get total-supply) amount))
+        
+        (ok amount)
+    )
+)
+
+(define-public (transfer (amount uint) (sender principal) (recipient principal))
+    (begin
+        (try! (check-initialized))
+        (asserts! (and 
+            (not (is-eq sender recipient))
+            (not (is-eq recipient (var-get treasury)))
+        ) ERR-INVALID-RECIPIENT)
+        
+        (try! (ft-transfer? wrapped-btc amount sender recipient))
+        (ok true)
+    )
+)
