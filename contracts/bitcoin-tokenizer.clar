@@ -211,3 +211,22 @@
 (define-read-only (get-total-supply)
     (ok (var-get total-supply))
 )
+
+(define-read-only (get-balance (account principal))
+    (ok (ft-get-balance wrapped-btc account))
+)
+
+(define-read-only (get-user-deposits (user principal))
+    (ok (map-get? user-deposits user))
+)
+
+(define-read-only (is-approved-operator (owner principal) (operator principal))
+    (ok (default-to 
+        false 
+        (map-get? approved-operators { owner: owner, operator: operator })
+    ))
+)
+
+(define-read-only (get-fee-rate)
+    (ok (var-get protocol-fee-rate))
+)
